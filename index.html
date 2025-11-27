@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>林𡨸新字</title>
+    <title>林㕦新字</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -38,8 +38,21 @@
         .subtitle {
             font-family: "Nom Na Tong", "HanaMinA", "SimSun", serif;
             font-size: 2.5rem;
+            font-weight: normal;
             color: #222;
             margin: 0;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .stats span {
+            margin: 0 8px;
         }
 
         .search-box {
@@ -280,12 +293,13 @@
 <body>
     <div class="container">
         <header>
-            <h2 class="subtitle">林𡨸新字</h2>
+            <h2 class="subtitle">林㕦新字</h2>
+            <div class="stats" id="stats"></div>
         </header>
 
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="字 | dăngc | * (全部)" autocomplete="off">
-            <button onclick="performSearch()">🔎</button>
+            <button onclick="performSearch()">𬑑</button>
         </div>
 
         <div class="tabs">
@@ -314,6 +328,7 @@
         var dataSingle = [];
         var dataCompound = [];
         var currentTab = 'single';
+        var sheetCounts = { han: 0, gu: 0, jin: 0 };
 
         async function loadData() {
             try {
@@ -342,6 +357,7 @@
                             meaning: '',
                             note: ''
                         });
+                        sheetCounts.han++;
                     }
                 }
                 
@@ -356,6 +372,7 @@
                             meaning: row[3] ? String(row[3]).trim() : '',
                             note: ''
                         });
+                        sheetCounts.gu++;
                     }
                 }
                 
@@ -370,6 +387,7 @@
                             meaning: row[3] ? String(row[3]).trim() : '',
                             note: ''
                         });
+                        sheetCounts.jin++;
                     }
                 }
                 
@@ -388,6 +406,18 @@
                 }
                 
                 document.getElementById('resultArea').innerHTML = '';
+                
+                var total = dataSingle.length;
+                var hanPercent = ((sheetCounts.han / total) * 100).toFixed(1);
+                var guPercent = ((sheetCounts.gu / total) * 100).toFixed(1);
+                var jinPercent = ((sheetCounts.jin / total) * 100).toFixed(1);
+                
+                document.getElementById('stats').innerHTML = 
+                    '<span>漢: ' + sheetCounts.han + ' (' + hanPercent + '%)</span>' +
+                    '<span>俗: ' + sheetCounts.gu + ' (' + guPercent + '%)</span>' +
+                    '<span>造: ' + sheetCounts.jin + ' (' + jinPercent + '%)</span>' +
+                    '<span>總: ' + total + '</span>';
+                
                 console.log('Đã tải:', dataSingle.length, 'từ đơn |', dataCompound.length, 'từ ghép');
                 
             } catch (error) {
